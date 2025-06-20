@@ -256,5 +256,5 @@ Please keep UI & API changes decoupled and update this README accordingly.
 
 License
 
-MIT © [Your Name]
+MIT © [Mohmmed Asad Alherthani]
 Feel free to adapt and extend!
