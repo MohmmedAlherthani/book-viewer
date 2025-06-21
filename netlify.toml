@@ -1,0 +1,9 @@
+[build]
+  publish   = "build"        # React’s output
+  functions = "functions"    # folder with your .js handlers
+
+[[redirects]]
+  from   = "/api/*"
+  to     = "/.netlify/functions/:splat"
+  status = 200
+  force  = true
