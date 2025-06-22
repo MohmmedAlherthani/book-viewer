@@ -1,49 +1,42 @@
-// src/components/ExecutionOptions.jsx
 import React from "react";
 import styled from "styled-components";
 
-const Wrap = styled.div`
+const Tabs = styled.div`
   display: flex;
   justify-content: center;
-  gap: ${({ theme }) => theme.spacing(2)};
-  margin-bottom: ${({ theme }) => theme.spacing(3)};
+  gap: 1rem;
+  margin: 1.5rem 0;
 `;
 
 const Tab = styled.button`
   background: ${({ active, theme }) =>
-    active ? theme.colors.accent : theme.colors.surface};
-  color: ${({ active, theme }) =>
-    active ? theme.colors.text : theme.colors.muted};
+    active ? theme.colors.primary : theme.colors.surface};
+  color: ${({ active, theme }) => (active ? "white" : theme.colors.muted)};
   border: none;
-  padding: ${({ theme }) => theme.spacing(1)} ${({ theme }) =>
-  theme.spacing(2)};
-  border-radius: ${({ theme }) => theme.radii.md};
-  box-shadow: ${({ theme }) => theme.shadows.sm};
+  padding: 0.75rem 1.5rem;
+  border-radius: 999px;
+  box-shadow: ${({ active }) =>
+    active ? "0 4px 8px rgba(0,0,0,0.15)" : "inset 0 1px 3px rgba(0,0,0,0.1)"};
   cursor: pointer;
-  font-weight: ${({ active }) => (active ? "600" : "400")};
-  transition: background 0.2s;
+  font-weight: 500;
+  transition: all 0.2s;
   &:hover {
-    background: ${({ theme, active }) =>
-      active ? theme.colors.accent : theme.colors.surface};
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.12);
   }
 `;
 
 export default function ExecutionOptions({ mode, setMode }) {
   return (
-    <Wrap>
-      {["list", "search", "filter"].map((m) => (
-        <Tab
-          key={m}
-          active={mode === m}
-          onClick={() => setMode(m)}
-        >
-          {{
-            list: "عرض الكتب",
-            search: "بحث داخل كتاب",
-            filter: "تصنيفات الكتب",
-          }[m]}
-        </Tab>
-      ))}
-    </Wrap>
+    <Tabs>
+      <Tab active={mode === "list"} onClick={() => setMode("list")}>
+        عرض الكتب
+      </Tab>
+      <Tab active={mode === "search"} onClick={() => setMode("search")}>
+        بحث داخل كتاب
+      </Tab>
+      <Tab active={mode === "filter"} onClick={() => setMode("filter")}>
+        تصنيفات الكتب
+      </Tab>
+    </Tabs>
   );
 }

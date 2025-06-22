@@ -1,55 +1,70 @@
-// src/App.jsx
-import React, { useState, useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import { ThemeProvider } from "styled-components";
-import styled from "styled-components";
+import { theme } from "./theme";
+import { GlobalStyle } from "./GlobalStyle";
 import Navbar from "./components/Navbar";
 import ExecutionOptions from "./components/ExecutionOptions";
 import BookList from "./components/BookList";
 import BookSearch from "./components/BookSearch";
 import BookFilter from "./components/BookFilter";
+import UploadBook from "./components/UploadBook";
+import AddBookByUrl from "./components/AddBookByUrl";
 import Loader from "./components/Loader";
-import { GlobalStyle } from "./GlobalStyle";
-import { theme } from "./theme";
-import items from "./items";
-import { fetchBooks } from "./api";
-
-const Main = styled.main`
-  max-width: 900px;
-  margin: ${({ theme }) => theme.spacing(4)} auto;
-  padding: 0 ${({ theme }) => theme.spacing(2)};
-`;
+import {
+  listBooks,
+  addBooks,
+  clearBooks,
+  uploadBook,
+  searchInBook,
+} from "./api";
 
 export default function App() {
   const [mode, setMode] = useState("list");
   const [books, setBooks] = useState([]);
   const [loading, setLoading] = useState(true);
-  const [error, setError] = useState("");
 
   useEffect(() => {
-    fetchBooks(items)
-      .then((b) => setBooks(b))
-      .catch((e) => setError(e.message))
-      .finally(() => setLoading(false));
+    listBooks().then((b) => {
+      setBooks(b);
+      setLoading(false);
+    });
   }, []);
+
+  const refresh = () => {
+    setLoading(true);
+    listBooks().then((b) => {
+      setBooks(b);
+      setLoading(false);
+    });
+  };
 
   return (
     <ThemeProvider theme={theme}>
       <GlobalStyle />
       <Navbar />
-      <Main>
+      <main style={{ maxWidth: 900, margin: "2rem auto", padding: "0 1rem" }}>
+        <button
+          onClick={() => {
+            clearBooks().then(setBooks);
+          }}
+          style={{
+            background: "#e74c3c",
+            color: "#fff",
+            border: "none",
+            padding: "0.5rem",
+            borderRadius: 6,
+          }}
+        >
+          مسح جميع الكتب
+        </button>
         <ExecutionOptions mode={mode} setMode={setMode} />
-
-        {loading && <Loader />}
-        {error && <p style={{ color: theme.colors.accent }}>Error: {error}</p>}
-
-        {!loading && !error && mode === "list" && <BookList books={books} />}
-        {!loading && !error && mode === "search" && (
-          <BookSearch books={books} />
-        )}
-        {!loading && !error && mode === "filter" && (
-          <BookFilter books={books} />
-        )}
-      </Main>
+        <AddBookByUrl onAdd={(url) => addBooks([url]).then(setBooks)} />
+        <UploadBook onUpload={() => uploadBook().then(setBooks)} />
+        {loading ? <Loader /> : null}
+        {!loading && mode === "list" && <BookList books={books} />}
+        {!loading && mode === "search" && <BookSearch books={books} />}
+        {!loading && mode === "filter" && <BookFilter books={books} />}
+      </main>
     </ThemeProvider>
   );
 }

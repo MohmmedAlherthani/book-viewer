@@ -1,6 +1,6 @@
 [build]
-  publish   = "build"        # React’s output
-  functions = "functions"    # folder with your .js handlers
+  publish   = "build"
+  functions = "functions"
 
 [[redirects]]
   from   = "/api/*"
